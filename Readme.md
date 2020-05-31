@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Юлия Ситникова](https://up.htmlacademy.ru/javascript/20/user/175289).
-* Наставник: `Неизвестно`.
+* Наставник: Магомед Кандаев.
 
 ---
 
