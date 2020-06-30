@@ -1,6 +1,8 @@
 'use strict';
 
 var PINS_COUNT = 8;
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
 var PIN_LOCATION_X_MIN = 0;
 var PIN_LOCATION_X_MAX = 1200;
 var PIN_LOCATION_Y_MIN = 130;
@@ -28,7 +30,7 @@ var getRandomElement = function (elements) {
 var getRandomElements = function (elements) {
   var randomElements = elements.slice();
   for (var i = randomElements.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
+    var j = Math.floor(Math.random() * randomElements.length);
     var swap = randomElements[j];
     randomElements[j] = randomElements[i];
     randomElements[i] = swap;
@@ -89,16 +91,23 @@ var getPins = function (count) {
   return pins;
 };
 
-var renderPins = function (data) {
+var createPin = function (pin) {
+  var template = document.querySelector('#pin').content.querySelector('.map__pin');
+  var pinElement = template.cloneNode(true);
+  var left = pin.location.x - PIN_WIDTH / 2;
+  var top = pin.location.y - PIN_HEIGHT;
+  pinElement.setAttribute('style', 'left: ' + left + 'px; top: ' + top + 'px;');
+  pinElement.querySelector('img').src = pin.author.avatar;
+  return pinElement;
+};
+
+var renderPins = function (pins) {
+  var mapPins = document.querySelector('.map__pins');
   var fragment = document.createDocumentFragment();
-  var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-  for (var i = 0; i < data.length; i++) {
-    var pinElement = pinTemplate.cloneNode(true);
-    pinElement.setAttribute('style', 'left: ' + data[i].location.x + 'px; top: ' + data[i].location.y + 'px;');
-    pinElement.querySelector('img').src = data[i].author.avatar;
-    fragment.appendChild(pinElement);
-  }
-  document.querySelector(' .map__pins').appendChild(fragment);
+  pins.forEach(function (pin) {
+    fragment.appendChild(createPin(pin));
+  });
+  mapPins.appendChild(fragment);
 };
 
 showMap();
