@@ -15,8 +15,15 @@ var pinsGeneratedData = {
   'rooms': [1, 2, 3, 4],
   'guests': [1, 2, 3, 4],
   'checkin': ['12:00', '13:00', '14:00'],
+  'checkout': ['12:00', '13:00', '14:00'],
   'features': ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
   'photos': ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'],
+};
+var typeMap = {
+  'flat': 'Квартира',
+  'bungalo': 'Бунгало',
+  'house': 'Дом',
+  'palace': 'Дворец'
 };
 
 var getRandomNumber = function (min, max) {
@@ -54,7 +61,7 @@ var generatePin = function (index) {
   var rooms = getRandomElement(pinsGeneratedData['rooms']);
   var guests = getRandomElement(pinsGeneratedData['guests']);
   var checkin = getRandomElement(pinsGeneratedData['checkin']);
-  var checkout = checkin;
+  var checkout = getRandomElement(pinsGeneratedData['checkout']);
   var features = getRandomElements(pinsGeneratedData['features']);
   var description = 'Описание предложения';
   var photos = getRandomElements(pinsGeneratedData['photos']);
@@ -110,6 +117,44 @@ var renderPins = function (pins) {
   mapPins.appendChild(fragment);
 };
 
+var createElement = function (tagName, className, text) {
+  var element = document.createElement(tagName);
+  element.classList.add(className);
+  if (text) {
+    element.textConten = text;
+  }
+  return element;
+};
+
+var renderCard = function (pin) {
+  var mapFilters = document.querySelector('.map__filters-container');
+  var template = document.querySelector('#card').content.querySelector('.map__card');
+  var card = template.cloneNode(true);
+  card.querySelector('.popup__title').textContent = pin.offer.title;
+  card.querySelector('.popup__text--address').textContent = pin.offer.address;
+  card.querySelector('.popup__text--price').textContent = pin.offer.price + '₽/ночь';
+  card.querySelector('.popup__type').textContent = typeMap[pin.offer.type];
+  card.querySelector('.popup__text--capacity').textContent = pin.offer.rooms + ' комнаты для ' + pin.offer.guests + ' гостей';
+  card.querySelector('.popup__text--time').textContent = 'Заезд после ' + pin.offer.checkin + ', выезд до ' + pin.offer.checkout;
+  pin.offer.features.forEach(function (feature) {
+    var item = createElement('li', 'popup__feature');
+    item.classList.add('popup__feature--' + feature);
+    card.querySelector('.popup__features').append(item);
+  });
+  card.querySelector('.popup__description').textContent = pin.offer.description;
+  pin.offer.photos.forEach(function (photo) {
+    var img = createElement('img', 'popup__photo');
+    img.src = photo;
+    img.width = 45;
+    img.height = 40;
+    img.alt = 'Фотография жилья';
+    card.querySelector('.popup__photos').append(img);
+  });
+  card.querySelector('.popup__avatar').src = pin.author.avatar;
+  map.insertBefore(card, mapFilters);
+};
+
 showMap();
 var pins = getPins(PINS_COUNT);
 renderPins(pins);
+renderCard(pins[0]);
