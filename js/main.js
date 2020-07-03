@@ -46,6 +46,21 @@ var getRandomElements = function (elements) {
   return randomElements;
 };
 
+var getWordDeclension = function (number, words) {
+  number = Math.abs(number) % 100;
+  var numberMod = number % 10;
+  if (number > 10 && number < 20) {
+    return words[2];
+  }
+  if (numberMod > 1 && numberMod < 5) {
+    return words[1];
+  }
+  if (numberMod === 1) {
+    return words[0];
+  }
+  return words[2];
+};
+
 var showMap = function () {
   map.classList.remove('map--faded');
 };
@@ -126,6 +141,21 @@ var createElement = function (tagName, className, text) {
   return element;
 };
 
+var createCardFeature = function (feature) {
+  var cardFeature = createElement('li', 'popup__feature');
+  cardFeature.classList.add('popup__feature--' + feature);
+  return cardFeature;
+};
+
+var createCardImage = function (photo) {
+  var cardImage = createElement('img', 'popup__photo');
+  cardImage.src = photo;
+  cardImage.width = 45;
+  cardImage.height = 40;
+  cardImage.alt = 'Фотография жилья';
+  return cardImage;
+};
+
 var renderCard = function (pin) {
   var mapFilters = document.querySelector('.map__filters-container');
   var template = document.querySelector('#card').content.querySelector('.map__card');
@@ -134,21 +164,16 @@ var renderCard = function (pin) {
   card.querySelector('.popup__text--address').textContent = pin.offer.address;
   card.querySelector('.popup__text--price').textContent = pin.offer.price + '₽/ночь';
   card.querySelector('.popup__type').textContent = typeMap[pin.offer.type];
-  card.querySelector('.popup__text--capacity').textContent = pin.offer.rooms + ' комнаты для ' + pin.offer.guests + ' гостей';
+  var roomsCount = pin.offer.rooms + ' ' + getWordDeclension(pin.offer.rooms, ['комната', 'комнаты', 'комнат']);
+  var guestsCount = pin.offer.guests + ' ' + getWordDeclension(pin.offer.guests, ['гостя', 'гостей', 'гостей']);
+  card.querySelector('.popup__text--capacity').textContent = roomsCount + ' для ' + guestsCount;
   card.querySelector('.popup__text--time').textContent = 'Заезд после ' + pin.offer.checkin + ', выезд до ' + pin.offer.checkout;
   pin.offer.features.forEach(function (feature) {
-    var item = createElement('li', 'popup__feature');
-    item.classList.add('popup__feature--' + feature);
-    card.querySelector('.popup__features').append(item);
+    card.querySelector('.popup__features').append(createCardFeature(feature));
   });
   card.querySelector('.popup__description').textContent = pin.offer.description;
   pin.offer.photos.forEach(function (photo) {
-    var img = createElement('img', 'popup__photo');
-    img.src = photo;
-    img.width = 45;
-    img.height = 40;
-    img.alt = 'Фотография жилья';
-    card.querySelector('.popup__photos').append(img);
+    card.querySelector('.popup__photos').append(createCardImage(photo));
   });
   card.querySelector('.popup__avatar').src = pin.author.avatar;
   map.insertBefore(card, mapFilters);
