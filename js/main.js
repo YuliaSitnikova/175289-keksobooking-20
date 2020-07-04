@@ -141,10 +141,48 @@ var createElement = function (tagName, className, text) {
   return element;
 };
 
+var customizeCardsElement = function (element, value) {
+  if (value) {
+    element.textContent = value;
+  } else {
+    element.style.display = 'none';
+  }
+};
+
+var customizeCardsCapacity = function (capacityElement, rooms, guest) {
+  if (rooms && guest) {
+    var roomsCount = rooms + ' ' + getWordDeclension(rooms, ['комната', 'комнаты', 'комнат']);
+    var guestsCount = guest + ' ' + getWordDeclension(guest, ['гостя', 'гостей', 'гостей']);
+    capacityElement.textContent = roomsCount + ' для ' + guestsCount;
+  } else {
+    capacityElement.style.display = 'none';
+  }
+};
+
+var customizeCardsTime = function (timeElement, checkin, checkout) {
+  if (checkin && checkout) {
+    timeElement.textContent = 'Заезд после ' + checkin + ', выезд до ' + checkout;
+  } else {
+    timeElement.style.display = 'none';
+  }
+};
+
 var createCardFeature = function (feature) {
   var cardFeature = createElement('li', 'popup__feature');
   cardFeature.classList.add('popup__feature--' + feature);
   return cardFeature;
+};
+
+var customizeCardsFeatures = function (featuresElement, features) {
+  if (features.length > 0) {
+    var fragment = document.createDocumentFragment();
+    features.forEach(function (feature) {
+      fragment.append(createCardFeature(feature));
+    });
+    featuresElement.append(fragment);
+  } else {
+    featuresElement.style.display = 'none';
+  }
 };
 
 var createCardImage = function (photo) {
@@ -156,26 +194,32 @@ var createCardImage = function (photo) {
   return cardImage;
 };
 
+var customizeCardsPhotos = function (photosElement, photos) {
+  if (photos.length > 0) {
+    var fragment = document.createDocumentFragment();
+    photos.forEach(function (photo) {
+      fragment.append(createCardImage(photo));
+    });
+    photosElement.append(fragment);
+  } else {
+    photosElement.style.display = 'none';
+  }
+};
+
 var renderCard = function (pin) {
   var mapFilters = document.querySelector('.map__filters-container');
   var template = document.querySelector('#card').content.querySelector('.map__card');
   var card = template.cloneNode(true);
-  card.querySelector('.popup__title').textContent = pin.offer.title;
-  card.querySelector('.popup__text--address').textContent = pin.offer.address;
-  card.querySelector('.popup__text--price').textContent = pin.offer.price + '₽/ночь';
-  card.querySelector('.popup__type').textContent = typeMap[pin.offer.type];
-  var roomsCount = pin.offer.rooms + ' ' + getWordDeclension(pin.offer.rooms, ['комната', 'комнаты', 'комнат']);
-  var guestsCount = pin.offer.guests + ' ' + getWordDeclension(pin.offer.guests, ['гостя', 'гостей', 'гостей']);
-  card.querySelector('.popup__text--capacity').textContent = roomsCount + ' для ' + guestsCount;
-  card.querySelector('.popup__text--time').textContent = 'Заезд после ' + pin.offer.checkin + ', выезд до ' + pin.offer.checkout;
-  pin.offer.features.forEach(function (feature) {
-    card.querySelector('.popup__features').append(createCardFeature(feature));
-  });
-  card.querySelector('.popup__description').textContent = pin.offer.description;
-  pin.offer.photos.forEach(function (photo) {
-    card.querySelector('.popup__photos').append(createCardImage(photo));
-  });
-  card.querySelector('.popup__avatar').src = pin.author.avatar;
+  customizeCardsElement(card.querySelector('.popup__title'), pin.offer.title);
+  customizeCardsElement(card.querySelector('.popup__text--address'), pin.offer.address);
+  customizeCardsElement(card.querySelector('.popup__text--price'), pin.offer.price + '₽/ночь');
+  customizeCardsElement(card.querySelector('.popup__type'), typeMap[pin.offer.type]);
+  customizeCardsCapacity(card.querySelector('.popup__text--capacity'), pin.offer.rooms, pin.offer.guests);
+  customizeCardsTime(card.querySelector('.popup__text--time'), pin.offer.checkin, pin.offer.checkout);
+  customizeCardsFeatures(card.querySelector('.popup__features'), pin.offer.features);
+  customizeCardsElement(card.querySelector('.popup__description'), pin.offer.description);
+  customizeCardsPhotos(card.querySelector('.popup__photos'), pin.offer.photos);
+  customizeCardsElement(card.querySelector('.popup__avatar'), pin.author.avatar);
   map.insertBefore(card, mapFilters);
 };
 
