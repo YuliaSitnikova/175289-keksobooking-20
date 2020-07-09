@@ -1,7 +1,7 @@
 'use strict';
 
 var MAIN_PIN_WIDTH = 65;
-var MAIN_PIN_HEIGHT = 81;
+var MAIN_PIN_HEIGHT = 84;
 var ROUND_MAIN_PIN_HEIGHT = 65;
 
 var PINS_COUNT = 8;
@@ -15,10 +15,13 @@ var PIN_LOCATION_Y_MAX = 630;
 var map = document.querySelector('.map');
 var mainPin = map.querySelector('.map__pin--main');
 var form = document.querySelector('.ad-form');
+var formControls = form.querySelectorAll('[name]');
 var formAddress = form.querySelector('#address');
 var formRoom = form.querySelector('#room_number');
 var formCapacity = form.querySelector('#capacity');
+var formButtons = form.querySelectorAll('.ad-form__element--submit button');
 var filter = document.querySelector('.map__filters');
+var filterControls = filter.querySelectorAll('[name]');
 var pinsGeneratedData = {
   'prices': [1000, 1200, 1500, 2500, 3000],
   'types': ['palace', 'flat', 'house', 'bungalo'],
@@ -80,7 +83,6 @@ var getWordDeclension = function (number, words) {
 var onMainPinMousedown = function (evt) {
   if (evt.button === 0) {
     unblockPage();
-    changeAddress();
   }
 };
 
@@ -249,31 +251,41 @@ var renderCard = function (pin) {
 };
 
 var blockPage = function () {
+  setAddress();
   map.classList.add('map--faded');
+  var pins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
+  if (pins.length) {
+    pins.forEach(function (pin) {
+      pin.remove();
+    });
+  }
   form.classList.add('ad-form--disabled');
-  var formControls = form.querySelectorAll('[name]');
   formControls.forEach(function (control) {
     control.disabled = true;
   });
-  var filterControls = filter.querySelectorAll('[name]');
   filterControls.forEach(function (control) {
     control.disabled = true;
+  });
+  formButtons.forEach(function (button) {
+    button.disabled = true;
   });
   mainPin.addEventListener('mousedown', onMainPinMousedown);
   mainPin.addEventListener('keydown', onMainPinEnterPress);
 };
 
 var unblockPage = function () {
+  changeAddress();
   map.classList.remove('map--faded');
   var pins = getPins(PINS_COUNT);
   renderPins(pins);
-  renderCard(pins[0]);
+  // renderCard(pins[0]);
   form.classList.remove('ad-form--disabled');
-  var formControls = form.querySelectorAll('[name]');
   formControls.forEach(function (control) {
     control.disabled = false;
   });
-  var filterControls = filter.querySelectorAll('[name]');
+  formButtons.forEach(function (button) {
+    button.disabled = false;
+  });
   filterControls.forEach(function (control) {
     control.disabled = false;
   });
@@ -308,7 +320,6 @@ var limitFormOptions = function () {
   }
 };
 
-setAddress();
 limitFormOptions();
 blockPage();
 
