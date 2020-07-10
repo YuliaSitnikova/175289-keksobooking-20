@@ -17,6 +17,10 @@ var mainPin = map.querySelector('.map__pin--main');
 var form = document.querySelector('.ad-form');
 var formControls = form.querySelectorAll('[name]');
 var formAddress = form.querySelector('#address');
+var formType = form.querySelector('#type');
+var formPrice = form.querySelector('#price');
+var formTimein = form.querySelector('#timein');
+var formTimeout = form.querySelector('#timeout');
 var formRoom = form.querySelector('#room_number');
 var formCapacity = form.querySelector('#capacity');
 var formButtons = form.querySelectorAll('.ad-form__element--submit button');
@@ -37,6 +41,12 @@ var typeMap = {
   'bungalo': 'Бунгало',
   'house': 'Дом',
   'palace': 'Дворец'
+};
+var minPriceValidValues = {
+  'flat': 1000,
+  'bungalo': 0,
+  'house': 5000,
+  'palace': 10000
 };
 var capacityValidValues = {
   '1': ['1'],
@@ -283,6 +293,7 @@ var closeCard = function () {
 
 var blockPage = function () {
   setAddress();
+  setFormCapacity();
   map.classList.add('map--faded');
   var pins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
   if (pins.length) {
@@ -335,7 +346,30 @@ var changeAddress = function () {
   formAddress.value = locationX + ', ' + locationY;
 };
 
-var limitFormOptions = function () {
+var setFormPrice = function () {
+  var type = formType.value;
+  formPrice.min = minPriceValidValues[type];
+  formPrice.placeholder = minPriceValidValues[type];
+  validFormPrice();
+};
+
+var validFormPrice = function () {
+  if (formPrice.validity.rangeUnderflow) {
+    formPrice.setCustomValidity('Минимальная цена за ночь ' + formPrice.min);
+  } else {
+    formPrice.setCustomValidity('');
+  }
+};
+
+var setFormTimeout = function () {
+  formTimeout.value = formTimein.value;
+};
+
+var setFormTimein = function () {
+  formTimein.value = formTimeout.value;
+};
+
+var setFormCapacity = function () {
   var rooms = formRoom.value;
   var options = formCapacity.querySelectorAll('option');
   options.forEach(function (option) {
@@ -350,9 +384,24 @@ var limitFormOptions = function () {
   }
 };
 
-limitFormOptions();
 blockPage();
 
+formType.addEventListener('change', function () {
+  setFormPrice();
+});
+
+formPrice.addEventListener('input', function () {
+  validFormPrice();
+});
+
+formTimein.addEventListener('change', function () {
+  setFormTimeout();
+});
+
+formTimeout.addEventListener('change', function () {
+  setFormTimein();
+});
+
 formRoom.addEventListener('change', function () {
-  limitFormOptions();
+  setFormCapacity();
 });
