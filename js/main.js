@@ -354,7 +354,9 @@ var setFormPrice = function () {
 };
 
 var validFormPrice = function () {
-  if (formPrice.validity.rangeUnderflow) {
+  if (formPrice.validity.rangeOverflow) {
+    formPrice.setCustomValidity('Максимальная цена за ночь ' + formPrice.max);
+  } else if (formPrice.validity.rangeUnderflow) {
     formPrice.setCustomValidity('Минимальная цена за ночь ' + formPrice.min);
   } else {
     formPrice.setCustomValidity('');
