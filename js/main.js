@@ -92,6 +92,12 @@ var onMainPinEnterPress = function (evt) {
   }
 };
 
+var onMapCardEscPress = function (evt) {
+  if (evt.code === 'Escape') {
+    closeCard();
+  }
+};
+
 var generatePin = function (index) {
   var avatar = 'img/avatars/user0' + index + '.png';
   var title = 'Заголовок предложения';
@@ -147,6 +153,9 @@ var createPin = function (pin) {
   var top = pin.location.y - PIN_HEIGHT;
   pinElement.setAttribute('style', 'left: ' + left + 'px; top: ' + top + 'px;');
   pinElement.querySelector('img').src = pin.author.avatar;
+  pinElement.addEventListener('click', function () {
+    openCard(pin);
+  });
   return pinElement;
 };
 
@@ -166,6 +175,10 @@ var createElement = function (tagName, className, text) {
     element.textConten = text;
   }
   return element;
+};
+
+var customizeCardsAvatar = function (element, src) {
+  element.src = src;
 };
 
 var customizeCardsElement = function (element, value) {
@@ -237,6 +250,11 @@ var renderCard = function (pin) {
   var mapFilters = document.querySelector('.map__filters-container');
   var template = document.querySelector('#card').content.querySelector('.map__card');
   var card = template.cloneNode(true);
+  var closeCardButton = card.querySelector('.popup__close');
+  closeCardButton.addEventListener('click', function () {
+    closeCard();
+  });
+  customizeCardsAvatar(card.querySelector('.popup__avatar'), pin.author.avatar);
   customizeCardsElement(card.querySelector('.popup__title'), pin.offer.title);
   customizeCardsElement(card.querySelector('.popup__text--address'), pin.offer.address);
   customizeCardsElement(card.querySelector('.popup__text--price'), pin.offer.price + '₽/ночь');
@@ -246,8 +264,21 @@ var renderCard = function (pin) {
   customizeCardsFeatures(card.querySelector('.popup__features'), pin.offer.features);
   customizeCardsElement(card.querySelector('.popup__description'), pin.offer.description);
   customizeCardsPhotos(card.querySelector('.popup__photos'), pin.offer.photos);
-  customizeCardsElement(card.querySelector('.popup__avatar'), pin.author.avatar);
   map.insertBefore(card, mapFilters);
+};
+
+var openCard = function (pin) {
+  closeCard();
+  renderCard(pin);
+  document.addEventListener('keydown', onMapCardEscPress);
+};
+
+var closeCard = function () {
+  var card = map.querySelector('.map__card');
+  if (card) {
+    card.remove();
+  }
+  document.removeEventListener('keydown', onMapCardEscPress);
 };
 
 var blockPage = function () {
@@ -278,7 +309,6 @@ var unblockPage = function () {
   map.classList.remove('map--faded');
   var pins = getPins(PINS_COUNT);
   renderPins(pins);
-  // renderCard(pins[0]);
   form.classList.remove('ad-form--disabled');
   formControls.forEach(function (control) {
     control.disabled = false;
