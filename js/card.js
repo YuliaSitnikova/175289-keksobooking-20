@@ -120,6 +120,6 @@
   };
 
   window.card = {
-    openCard: openCard
+    open: openCard
   };
 })();
