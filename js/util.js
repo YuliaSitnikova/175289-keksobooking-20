@@ -3,9 +3,11 @@
 (function () {
   var createElement = function (tagName, className, text) {
     var element = document.createElement(tagName);
-    element.classList.add(className);
+    if (className) {
+      element.classList.add(className);
+    }
     if (text) {
-      element.textConten = text;
+      element.textContent = text;
     }
     return element;
   };

@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var PINS_COUNT = 8;
-
   var map = document.querySelector('.map');
   var mainPin = map.querySelector('.map__pin--main');
   var form = document.querySelector('.ad-form');
@@ -50,8 +48,7 @@
   var unblockPage = function () {
     window.form.changeAddress();
     map.classList.remove('map--faded');
-    var data = window.data.getPins(PINS_COUNT);
-    window.pin.renderPins(data);
+    window.pin.render();
     form.classList.remove('ad-form--disabled');
     formControls.forEach(function (control) {
       control.disabled = false;
@@ -67,4 +64,5 @@
   };
 
   blockPage();
+  unblockPage();
 })();
