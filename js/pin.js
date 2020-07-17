@@ -15,15 +15,19 @@
     });
     return pinElement;
   };
+
   var renderPins = function (data) {
     var mapPins = document.querySelector('.map__pins');
     var fragment = document.createDocumentFragment();
     data.forEach(function (pin) {
-      fragment.appendChild(createPin(pin));
+      if (pin.hasOwnProperty('offer')) {
+        fragment.appendChild(createPin(pin));
+      }
     });
     mapPins.appendChild(fragment);
   };
+
   window.pin = {
-    renderPins: renderPins
+    render: renderPins
   };
 })();

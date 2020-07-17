@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var PINS_COUNT = 8;
-
   var map = document.querySelector('.map');
   var mainPin = map.querySelector('.map__pin--main');
   var form = document.querySelector('.ad-form');
@@ -10,6 +8,19 @@
   var formButtons = form.querySelectorAll('.ad-form__element--submit button');
   var filter = document.querySelector('.map__filters');
   var filterControls = filter.querySelectorAll('[name]');
+
+  var onLoadSuccess = function (data) {
+    window.pin.render(data);
+  };
+
+  var onLoadError = function (errorText) {
+    var node = window.util.createElement('div', null, errorText);
+    node.style = 'position: absolute; top: 0; right: 0; left: 0; z-index: 100; padding: 5px; font-size: 14px; line-height: 14px; text-align: center; background-color: #ff5635; color: #ffffff';
+    document.querySelector('.map').prepend(node);
+    setTimeout(function () {
+      node.remove();
+    }, 5000);
+  };
 
   var onMainPinMousedown = function (evt) {
     if (evt.button === 0) {
@@ -50,8 +61,7 @@
   var unblockPage = function () {
     window.form.changeAddress();
     map.classList.remove('map--faded');
-    var data = window.data.getPins(PINS_COUNT);
-    window.pin.renderPins(data);
+    window.data.load(onLoadSuccess, onLoadError);
     form.classList.remove('ad-form--disabled');
     formControls.forEach(function (control) {
       control.disabled = false;
