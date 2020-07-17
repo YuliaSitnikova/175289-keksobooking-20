@@ -2,14 +2,14 @@
 
 (function () {
   var URL = 'https://javascript.pages.academy/keksobooking/data';
-  var statusCode = {
+  var StatusCode = {
     OK: 200
   };
 
   var load = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.addEventListener('load', function () {
-      if (xhr.status === statusCode.OK) {
+      if (xhr.status === StatusCode.OK) {
         onLoad(xhr.response);
       } else {
         onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);

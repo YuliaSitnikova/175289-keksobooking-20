@@ -16,7 +16,7 @@
     return pinElement;
   };
 
-  var onLoad = function (data) {
+  var renderPins = function (data) {
     var mapPins = document.querySelector('.map__pins');
     var fragment = document.createDocumentFragment();
     data.forEach(function (pin) {
@@ -25,16 +25,6 @@
       }
     });
     mapPins.appendChild(fragment);
-  };
-
-  var onError = function (errorText) {
-    var node = window.util.createElement('div', null, errorText);
-    node.style = 'position: absolute; top: 0; right: 0; left: 0; z-index: 100; padding: 5px; font-size: 14px; line-height: 14px; text-align: center; background-color: #ff5635; color: #ffffff';
-    document.querySelector('.map').prepend(node);
-  };
-
-  var renderPins = function () {
-    window.data.load(onLoad, onError);
   };
 
   window.pin = {
