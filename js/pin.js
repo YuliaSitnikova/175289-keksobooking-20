@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var map = document.querySelector('.map');
+
   var createPin = function (pin) {
     var PIN_WIDTH = 50;
     var PIN_HEIGHT = 70;
@@ -27,7 +29,17 @@
     mapPins.appendChild(fragment);
   };
 
+  var deletePins = function () {
+    var pins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
+    if (pins.length) {
+      pins.forEach(function (pin) {
+        pin.remove();
+      });
+    }
+  };
+
   window.pin = {
-    render: renderPins
+    render: renderPins,
+    delete: deletePins
   };
 })();
