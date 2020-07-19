@@ -2,13 +2,15 @@
 
 (function () {
   var LOAD_URL = 'https://javascript.pages.academy/keksobooking/data';
+  var LOAD_METHOD = 'GET';
   var SAVE_URL = 'https://javascript.pages.academy/keksobooking';
+  var SAVE_METHOD = 'POST';
   var TIMEOUT = 10000;
   var StatusCode = {
     OK: 200
   };
 
-  var load = function (onLoad, onError) {
+  var sendRequest = function (url, method, data, onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.addEventListener('load', function () {
       if (xhr.status === StatusCode.OK) {
@@ -25,29 +27,16 @@
     });
     xhr.responseType = 'json';
     xhr.timeout = TIMEOUT;
-    xhr.open('GET', LOAD_URL);
-    xhr.send();
+    xhr.open(method, url);
+    xhr.send(data);
+  };
+
+  var load = function (onLoad, onError) {
+    sendRequest(LOAD_URL, LOAD_METHOD, null, onLoad, onError);
   };
 
   var upload = function (data, onLoad, onError) {
-    var xhr = new XMLHttpRequest();
-    xhr.addEventListener('load', function () {
-      if (xhr.status === StatusCode.OK) {
-        onLoad();
-      } else {
-        onError();
-      }
-    });
-    xhr.addEventListener('error', function () {
-      onError();
-    });
-    xhr.addEventListener('timeout', function () {
-      onError();
-    });
-    xhr.responseType = 'json';
-    xhr.timeout = TIMEOUT;
-    xhr.open('POST', SAVE_URL);
-    xhr.send(data);
+    sendRequest(SAVE_URL, SAVE_METHOD, data, onLoad, onError);
   };
 
   window.data = {
