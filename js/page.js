@@ -11,9 +11,15 @@
   var formReset = form.querySelector('.ad-form__reset');
   var filter = document.querySelector('.map__filters');
   var filterControls = filter.querySelectorAll('[name]');
+  var filterType = filter.querySelector('#housing-type');
+  var pins = [];
 
   var onLoadSuccess = function (data) {
-    window.pin.render(data);
+    pins = data;
+    renderPins();
+    filterControls.forEach(function (control) {
+      control.disabled = false;
+    });
   };
 
   var onLoadError = function (errorText) {
@@ -44,6 +50,18 @@
     if (evt.key === 'Enter') {
       unblockPage();
     }
+  };
+
+  var renderPins = function () {
+    var filteredPins = pins;
+    var type = filterType.value;
+    if (type !== 'any') {
+      filteredPins = filteredPins.filter(function (pin) {
+        return pin.offer.type === type;
+      });
+    }
+    window.pin.delete();
+    window.pin.render(filteredPins);
   };
 
   var blockPage = function () {
@@ -79,9 +97,6 @@
     });
     formSubmit.disabled = false;
     formReset.disabled = false;
-    filterControls.forEach(function (control) {
-      control.disabled = false;
-    });
     window.form.changeAddress();
     mainPin.removeEventListener('mousedown', onMainPinMousedown);
     mainPin.removeEventListener('keydown', onMainPinEnterPress);
@@ -95,6 +110,11 @@
   formReset.addEventListener('click', function (evt) {
     evt.preventDefault();
     blockPage();
+  });
+
+  filterType.addEventListener('change', function () {
+    window.card.close();
+    renderPins();
   });
 
   blockPage();

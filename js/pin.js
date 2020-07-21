@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var PIN_COUNT = 5;
   var map = document.querySelector('.map');
 
   var createPin = function (pin) {
@@ -18,10 +19,10 @@
     return pinElement;
   };
 
-  var renderPins = function (data) {
+  var renderPins = function (pins) {
     var mapPins = document.querySelector('.map__pins');
     var fragment = document.createDocumentFragment();
-    data.forEach(function (pin) {
+    pins.slice(0, PIN_COUNT).forEach(function (pin) {
       if (pin.hasOwnProperty('offer')) {
         fragment.appendChild(createPin(pin));
       }
