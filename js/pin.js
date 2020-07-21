@@ -22,8 +22,7 @@
   var renderPins = function (pins) {
     var mapPins = document.querySelector('.map__pins');
     var fragment = document.createDocumentFragment();
-    var count = pins.length > PIN_COUNT ? PIN_COUNT : pins.length;
-    pins.slice(0, count).forEach(function (pin) {
+    pins.slice(0, PIN_COUNT).forEach(function (pin) {
       if (pin.hasOwnProperty('offer')) {
         fragment.appendChild(createPin(pin));
       }
