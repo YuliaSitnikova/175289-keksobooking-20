@@ -53,6 +53,11 @@
     window.message.showError();
   };
 
+  var onFilterChange = window.debounce(function () {
+    window.card.close();
+    renderPins();
+  });
+
   var onMainPinMousedown = function (evt) {
     if (evt.button === 0) {
       unblockPage();
@@ -66,7 +71,7 @@
   };
 
   var inPriceRange = function (price, range) {
-    return (price >= priceMap[range].min && price < priceMap[range].max)
+    return (price >= priceMap[range].min && price < priceMap[range].max);
   };
 
   var filterPins = function () {
@@ -150,10 +155,7 @@
   };
 
   filterControls.forEach(function (control) {
-    control.addEventListener('change', function () {
-      window.card.close();
-      renderPins();
-    });
+    control.addEventListener('change', onFilterChange);
   });
 
   form.addEventListener('submit', function (evt) {
