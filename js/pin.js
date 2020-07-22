@@ -30,7 +30,7 @@
     mapPins.appendChild(fragment);
   };
 
-  var deletePins = function () {
+  var removePins = function () {
     var pins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
     if (pins.length) {
       pins.forEach(function (pin) {
@@ -41,6 +41,6 @@
 
   window.pin = {
     render: renderPins,
-    delete: deletePins
+    remove: removePins
   };
 })();

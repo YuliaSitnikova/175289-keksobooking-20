@@ -11,7 +11,20 @@
   var formReset = form.querySelector('.ad-form__reset');
   var filter = document.querySelector('.map__filters');
   var filterControls = filter.querySelectorAll('[name]');
-  var filterType = filter.querySelector('#housing-type');
+  var filterPriceMap = {
+    'low': {
+      min: 0,
+      max: 10000
+    },
+    'middle': {
+      min: 10000,
+      max: 50000
+    },
+    'high': {
+      min: 50000,
+      max: 1000000
+    }
+  };
   var pins = [];
 
   var onLoadSuccess = function (data) {
@@ -52,22 +65,52 @@
     }
   };
 
-  var renderPins = function () {
-    var filteredPins = pins;
-    var type = filterType.value;
+  var filterPins = function () {
+    var filteredPins = pins.slice();
+    var type = filter.querySelector('#housing-type').value;
     if (type !== 'any') {
       filteredPins = filteredPins.filter(function (pin) {
         return pin.offer.type === type;
       });
     }
-    window.pin.delete();
+    var price = filter.querySelector('#housing-price').value;
+    if (price !== 'any') {
+      filteredPins = filteredPins.filter(function (pin) {
+        return (pin.offer.price >= filterPriceMap[price].min && pin.offer.price < filterPriceMap[price].max);
+      });
+    }
+    var rooms = filter.querySelector('#housing-rooms').value;
+    if (rooms !== 'any') {
+      filteredPins = filteredPins.filter(function (pin) {
+        return pin.offer.rooms === parseInt(rooms, 10);
+      });
+    }
+    var guests = filter.querySelector('#housing-guests').value;
+    if (guests !== 'any') {
+      filteredPins = filteredPins.filter(function (pin) {
+        return pin.offer.guests === parseInt(guests, 10);
+      });
+    }
+    var features = filter.querySelectorAll('#housing-features input:checked');
+    features.forEach(function (feature) {
+      filteredPins = filteredPins.filter(function (pin) {
+        return pin.offer.features.indexOf(feature.value) !== -1;
+      });
+    });
+
+    return filteredPins;
+  };
+
+  var renderPins = function () {
+    var filteredPins = filterPins();
+    window.pin.remove();
     window.pin.render(filteredPins);
   };
 
   var blockPage = function () {
     map.classList.add('map--faded');
     window.card.close();
-    window.pin.delete();
+    window.pin.remove();
     form.reset();
     form.classList.add('ad-form--disabled');
     formControls.forEach(function (control) {
@@ -102,6 +145,13 @@
     mainPin.removeEventListener('keydown', onMainPinEnterPress);
   };
 
+  filterControls.forEach(function (control) {
+    control.addEventListener('change', function () {
+      window.card.close();
+      renderPins();
+    });
+  });
+
   form.addEventListener('submit', function (evt) {
     evt.preventDefault();
     window.data.upload(new FormData(form), onSaveSuccess, onSaveError);
@@ -110,11 +160,6 @@
   formReset.addEventListener('click', function (evt) {
     evt.preventDefault();
     blockPage();
-  });
-
-  filterType.addEventListener('change', function () {
-    window.card.close();
-    renderPins();
   });
 
   blockPage();

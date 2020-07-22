@@ -20,6 +20,7 @@
   };
 
   var customizeElement = function (element, value) {
+    element.innerHTML = '';
     if (value) {
       element.textContent = value;
     } else {
@@ -28,6 +29,7 @@
   };
 
   var customizeCapacity = function (capacityElement, rooms, guest) {
+    capacityElement.innerHTML = '';
     if (rooms && guest) {
       var roomsCount = rooms + ' ' + window.util.getWordDeclension(rooms, ['комната', 'комнаты', 'комнат']);
       var guestsCount = guest + ' ' + window.util.getWordDeclension(guest, ['гостя', 'гостей', 'гостей']);
@@ -38,6 +40,7 @@
   };
 
   var customizeTime = function (timeElement, checkin, checkout) {
+    timeElement.innerHTML = '';
     if (checkin && checkout) {
       timeElement.textContent = 'Заезд после ' + checkin + ', выезд до ' + checkout;
     } else {
@@ -52,6 +55,7 @@
   };
 
   var customizeFeatures = function (featuresElement, features) {
+    featuresElement.innerHTML = '';
     if (features.length > 0) {
       var fragment = document.createDocumentFragment();
       features.forEach(function (feature) {
@@ -73,6 +77,7 @@
   };
 
   var customizePhotos = function (photosElement, photos) {
+    photosElement.innerHTML = '';
     if (photos.length > 0) {
       var fragment = document.createDocumentFragment();
       photos.forEach(function (photo) {
