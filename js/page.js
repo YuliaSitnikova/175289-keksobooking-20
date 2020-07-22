@@ -11,7 +11,7 @@
   var formReset = form.querySelector('.ad-form__reset');
   var filter = document.querySelector('.map__filters');
   var filterControls = filter.querySelectorAll('[name]');
-  var filterPriceMap = {
+  var priceMap = {
     'low': {
       min: 0,
       max: 10000
@@ -65,6 +65,10 @@
     }
   };
 
+  var inPriceRange = function (price, range) {
+    return (price >= priceMap[range].min && price < priceMap[range].max)
+  };
+
   var filterPins = function () {
     var filteredPins = pins.slice();
     var type = filter.querySelector('#housing-type').value;
@@ -76,7 +80,7 @@
     var price = filter.querySelector('#housing-price').value;
     if (price !== 'any') {
       filteredPins = filteredPins.filter(function (pin) {
-        return (pin.offer.price >= filterPriceMap[price].min && pin.offer.price < filterPriceMap[price].max);
+        return inPriceRange(pin.offer.price, price);
       });
     }
     var rooms = filter.querySelector('#housing-rooms').value;
