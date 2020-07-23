@@ -4,6 +4,7 @@
   var MAIN_PIN_WIDTH = 65;
   var MAIN_PIN_HEIGHT = 84;
   var ROUND_MAIN_PIN_HEIGHT = 65;
+  var FILE_TYPES = ['jpg', 'jpeg', 'png', 'gif'];
   var mainPin = document.querySelector('.map__pin--main');
   var form = document.querySelector('.ad-form');
   var addressControl = form.querySelector('#address');
@@ -13,6 +14,11 @@
   var timeoutControl = form.querySelector('#timeout');
   var roomControl = form.querySelector('#room_number');
   var capacityControl = form.querySelector('#capacity');
+  var avatarControl = form.querySelector('#avatar');
+  var avatarPreview = form.querySelector('.ad-form-header__preview img');
+  var avatarDefault = 'img/muffin-grey.svg';
+  var imagesControl = form.querySelector('#images');
+  var imagesPreview = form.querySelector('.ad-form__photo');
   var minPriceValidValues = {
     'flat': 1000,
     'bungalo': 0,
@@ -73,6 +79,52 @@
       capacityControl.querySelector('option:not([disabled])').selected = true;
     }
   };
+
+  var validFileType = function (file) {
+    var fileName = file.name.toLowerCase();
+    var matches = FILE_TYPES.some(function (item) {
+      return fileName.endsWith(item);
+    });
+    return matches;
+  };
+
+  var updateAvatar = function () {
+    var file = avatarControl.files[0];
+    if (file) {
+      if (validFileType(file)) {
+        var reader = new FileReader();
+        reader.addEventListener('load', function () {
+          avatarPreview.src = reader.result;
+        });
+        reader.readAsDataURL(file);
+      }
+    } else {
+      avatarPreview.src = avatarDefault;
+    }
+  };
+
+  var updateImages = function () {
+    var file = imagesControl.files[0];
+    if (file) {
+      if (validFileType(file)) {
+        var reader = new FileReader();
+        reader.addEventListener('load', function () {
+          imagesPreview.style.backgroundImage = 'url(' + reader.result + ')';
+        });
+        reader.readAsDataURL(file);
+      }
+    } else {
+      imagesPreview.removeAttribute('style');
+    }
+  };
+
+  avatarControl.addEventListener('change', function () {
+    updateAvatar();
+  });
+
+  imagesControl.addEventListener('change', function () {
+    updateImages();
+  });
 
   typeControl.addEventListener('change', function () {
     setPrice();
