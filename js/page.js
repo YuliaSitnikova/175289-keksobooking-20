@@ -103,7 +103,7 @@
     var features = filter.querySelectorAll('#housing-features input:checked');
     features.forEach(function (feature) {
       filteredPins = filteredPins.filter(function (pin) {
-        return pin.offer.features.indexOf(feature.value) !== -1;
+        return pin.offer.features.includes(feature.value);
       });
     });
 
