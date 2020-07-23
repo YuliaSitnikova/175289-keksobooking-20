@@ -7,6 +7,7 @@
   var FILE_TYPES = ['jpg', 'jpeg', 'png', 'gif'];
   var mainPin = document.querySelector('.map__pin--main');
   var form = document.querySelector('.ad-form');
+  var formControls = form.querySelectorAll('[name');
   var addressControl = form.querySelector('#address');
   var typeControl = form.querySelector('#type');
   var priceControl = form.querySelector('#price');
@@ -146,10 +147,22 @@
     setCapacity();
   });
 
+  formControls.forEach(function (control) {
+    control.addEventListener('change', function () {
+      if (!control.validity.valid) {
+        control.style.borderColor = 'red';
+      } else {
+        control.removeAttribute('style');
+      }
+    });
+  });
+
   window.form = {
     setAddress: setAddress,
     changeAddress: changeAddress,
     setCapacity: setCapacity,
+    updateAvatar: updateAvatar,
+    updateImages: updateImages
   };
 })();
 

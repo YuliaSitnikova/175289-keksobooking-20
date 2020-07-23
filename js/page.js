@@ -121,6 +121,8 @@
     window.card.close();
     window.pin.remove();
     form.reset();
+    window.form.updateAvatar();
+    window.form.updateImages();
     form.classList.add('ad-form--disabled');
     formControls.forEach(function (control) {
       control.disabled = true;
