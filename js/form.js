@@ -67,7 +67,7 @@
     var rooms = roomControl.value;
     var options = capacityControl.querySelectorAll('option');
     options.forEach(function (option) {
-      option.disabled = capacityValidValues[rooms].indexOf(option.value) === -1;
+      option.disabled = !capacityValidValues[rooms].includes(option.value);
     });
     if (options[capacityControl.selectedIndex].disabled) {
       capacityControl.querySelector('option:not([disabled])').selected = true;
