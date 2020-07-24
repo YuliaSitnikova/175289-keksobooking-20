@@ -38,7 +38,9 @@
       };
       pin.style.top = pin.offsetTop - shift.y + 'px';
       pin.style.left = pin.offsetLeft - shift.x + 'px';
-      window.form.changeAddress();
+      var locationX = pin.offsetLeft + Math.round(PIN_WIDTH / 2);
+      var locationY = pin.offsetTop + Math.round(PIN_HEIGHT);
+      window.form.setAddress(locationX, locationY);
     };
 
     var onMouseUp = function () {

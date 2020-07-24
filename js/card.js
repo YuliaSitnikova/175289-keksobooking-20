@@ -2,6 +2,10 @@
 
 (function () {
   var map = document.querySelector('.map');
+  var declensionMap = {
+    'rooms': ['комната', 'комнаты', 'комнат'],
+    'guest': ['гостя', 'гостей', 'гостей']
+  };
   var typeMap = {
     'flat': 'Квартира',
     'bungalo': 'Бунгало',
@@ -31,8 +35,8 @@
   var customizeCapacity = function (capacityElement, rooms, guest) {
     capacityElement.innerHTML = '';
     if (rooms && guest) {
-      var roomsCount = rooms + ' ' + window.util.getWordDeclension(rooms, ['комната', 'комнаты', 'комнат']);
-      var guestsCount = guest + ' ' + window.util.getWordDeclension(guest, ['гостя', 'гостей', 'гостей']);
+      var roomsCount = rooms + ' ' + window.util.getWordDeclension(rooms, declensionMap['rooms']);
+      var guestsCount = guest + ' ' + window.util.getWordDeclension(guest, declensionMap['guest']);
       capacityElement.textContent = roomsCount + ' для ' + guestsCount;
     } else {
       capacityElement.style.display = 'none';
@@ -111,7 +115,6 @@
   };
 
   var openCard = function (pin) {
-    closeCard();
     renderCard(pin);
     document.addEventListener('keydown', onCardEscPress);
   };
@@ -120,6 +123,8 @@
     var card = map.querySelector('.map__card');
     if (card) {
       card.remove();
+      var pinActive = map.querySelector('.map__pin--active');
+      pinActive.classList.remove('map__pin--active');
     }
     document.removeEventListener('keydown', onCardEscPress);
   };

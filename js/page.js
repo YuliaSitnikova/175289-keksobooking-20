@@ -3,6 +3,10 @@
 (function () {
   var PIN_X = 570;
   var PIN_Y = 375;
+  var PIN_WIDTH = 65;
+  var PIN_HEIGHT = 84;
+  var ROUND_PIN_HEIGHT = 65;
+  var ERROR_NODE_STYLE = 'position: absolute; top: 0; right: 0; left: 0; z-index: 100; padding: 5px; font-size: 14px; line-height: 14px; text-align: center; background-color: #ff5635; color: #ffffff';
   var map = document.querySelector('.map');
   var mainPin = map.querySelector('.map__pin--main');
   var form = document.querySelector('.ad-form');
@@ -11,16 +15,16 @@
   var formReset = form.querySelector('.ad-form__reset');
   var filter = document.querySelector('.map__filters');
   var filterControls = filter.querySelectorAll('[name]');
-  var priceMap = {
-    'low': {
+  var PriceValues = {
+    LOW: {
       min: 0,
       max: 10000
     },
-    'middle': {
+    MIDDLE: {
       min: 10000,
       max: 50000
     },
-    'high': {
+    HIGH: {
       min: 50000,
       max: 1000000
     }
@@ -37,7 +41,7 @@
 
   var onLoadError = function (errorText) {
     var node = window.util.createElement('div', null, errorText);
-    node.style = 'position: absolute; top: 0; right: 0; left: 0; z-index: 100; padding: 5px; font-size: 14px; line-height: 14px; text-align: center; background-color: #ff5635; color: #ffffff';
+    node.style = ERROR_NODE_STYLE;
     document.querySelector('.map').prepend(node);
     setTimeout(function () {
       node.remove();
@@ -71,7 +75,7 @@
   };
 
   var inPriceRange = function (price, range) {
-    return (price >= priceMap[range].min && price < priceMap[range].max);
+    return (price >= PriceValues[range.toUpperCase()].min && price < PriceValues[range.toUpperCase()].max);
   };
 
   var filterPins = function () {
@@ -125,6 +129,7 @@
     window.form.updateImages();
     form.classList.add('ad-form--disabled');
     formControls.forEach(function (control) {
+      control.removeAttribute('style');
       control.disabled = true;
     });
     formSubmit.blur();
@@ -134,9 +139,11 @@
     filterControls.forEach(function (control) {
       control.disabled = true;
     });
-    mainPin.style.top = PIN_Y + 'px';
     mainPin.style.left = PIN_X + 'px';
-    window.form.setAddress();
+    mainPin.style.top = PIN_Y + 'px';
+    var locationX = PIN_X + Math.round(PIN_WIDTH / 2);
+    var locationY = PIN_Y + Math.round(ROUND_PIN_HEIGHT / 2);
+    window.form.setAddress(locationX, locationY);
     window.form.setCapacity();
     mainPin.addEventListener('mousedown', onMainPinMousedown);
     mainPin.addEventListener('keydown', onMainPinEnterPress);
@@ -151,7 +158,9 @@
     });
     formSubmit.disabled = false;
     formReset.disabled = false;
-    window.form.changeAddress();
+    var locationX = PIN_X + Math.round(PIN_WIDTH / 2);
+    var locationY = PIN_Y + Math.round(PIN_HEIGHT);
+    window.form.setAddress(locationX, locationY);
     mainPin.removeEventListener('mousedown', onMainPinMousedown);
     mainPin.removeEventListener('keydown', onMainPinEnterPress);
   };

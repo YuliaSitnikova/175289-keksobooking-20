@@ -1,11 +1,7 @@
 'use strict';
 
 (function () {
-  var MAIN_PIN_WIDTH = 65;
-  var MAIN_PIN_HEIGHT = 84;
-  var ROUND_MAIN_PIN_HEIGHT = 65;
   var FILE_TYPES = ['jpg', 'jpeg', 'png', 'gif'];
-  var mainPin = document.querySelector('.map__pin--main');
   var form = document.querySelector('.ad-form');
   var formControls = form.querySelectorAll('[name');
   var addressControl = form.querySelector('#address');
@@ -20,35 +16,27 @@
   var avatarDefault = 'img/muffin-grey.svg';
   var imagesControl = form.querySelector('#images');
   var imagesPreview = form.querySelector('.ad-form__photo');
-  var minPriceValidValues = {
-    'flat': 1000,
-    'bungalo': 0,
-    'house': 5000,
-    'palace': 10000
+  var MinPriceValues = {
+    FLAT: 1000,
+    BUNGALO: 0,
+    HOUSE: 5000,
+    PALACE: 10000
   };
-  var capacityValidValues = {
-    '1': ['1'],
-    '2': ['1', '2'],
-    '3': ['1', '2', '3'],
-    '100': ['0']
-  };
-
-  var setAddress = function () {
-    var locationX = mainPin.offsetLeft + Math.round(MAIN_PIN_WIDTH / 2);
-    var locationY = mainPin.offsetTop + Math.round(ROUND_MAIN_PIN_HEIGHT / 2);
-    addressControl.value = locationX + ', ' + locationY;
+  var CapacityValues = {
+    1: ['1'],
+    2: ['1', '2'],
+    3: ['1', '2', '3'],
+    100: ['0']
   };
 
-  var changeAddress = function () {
-    var locationX = mainPin.offsetLeft + Math.round(MAIN_PIN_WIDTH / 2);
-    var locationY = mainPin.offsetTop + Math.round(MAIN_PIN_HEIGHT);
+  var setAddress = function (locationX, locationY) {
     addressControl.value = locationX + ', ' + locationY;
   };
 
   var setPrice = function () {
     var type = typeControl.value;
-    priceControl.min = minPriceValidValues[type];
-    priceControl.placeholder = minPriceValidValues[type];
+    priceControl.min = MinPriceValues[type.toUpperCase()];
+    priceControl.placeholder = MinPriceValues[type.toUpperCase()];
     validFormPrice();
   };
 
@@ -74,7 +62,7 @@
     var rooms = roomControl.value;
     var options = capacityControl.querySelectorAll('option');
     options.forEach(function (option) {
-      option.disabled = !capacityValidValues[rooms].includes(option.value);
+      option.disabled = !CapacityValues[rooms].includes(option.value);
     });
     if (options[capacityControl.selectedIndex].disabled) {
       capacityControl.querySelector('option:not([disabled])').selected = true;
@@ -159,7 +147,6 @@
 
   window.form = {
     setAddress: setAddress,
-    changeAddress: changeAddress,
     setCapacity: setCapacity,
     updateAvatar: updateAvatar,
     updateImages: updateImages
